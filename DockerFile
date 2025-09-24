@@ -1,0 +1,18 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY . .
+
+# Install curl and build tools
+RUN apt-get update && apt-get install -y curl build-essential
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Add Poetry to PATH
+ENV PATH="/root/.local/bin:$PATH"
+
+# Install dependencies
+RUN /root/.local/bin/poetry install
+
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
